@@ -18,6 +18,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,14 +37,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        //Initialize MediaRecorder
         mediaRecorder = new MediaRecorder();
 
-
+        //Get references to UI elements
         startBtn = findViewById(R.id.btn_start_recording);
         stopBtn = findViewById(R.id.btn_stop_recording);
 
-
+        //Listen for button clicks
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,12 +58,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        //get screen density
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         screenDensity = metrics.densityDpi;
 
-
+        //initialize media projection manager
         mediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
     }
 
@@ -93,7 +95,10 @@ public class MainActivity extends AppCompatActivity {
         startBtn.setEnabled(false);
         stopBtn.setEnabled(true);
         try {
-            String videoSavePath = Environment.getExternalStorageDirectory() + "/record.mp4";
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
+            String timestamp = now.format(formatter);
+            String videoSavePath = Environment.getExternalStorageDirectory() + "/record_" + timestamp +".mp4";
             mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
             mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
@@ -105,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             mediaRecorder.setOutputFile(videoSavePath);
             mediaRecorder.prepare();
 
-
+            // Request permission to capture the screen
             startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(), REQUEST_CODE);
         } catch (IOException e) {
             e.printStackTrace();
@@ -119,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         mediaRecorder.reset();
         mediaProjection.stop();
 
-
+        // Release the media recorder
         mediaRecorder.release();
     }
 }
