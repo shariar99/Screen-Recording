@@ -37,14 +37,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Initialize MediaRecorder
+
         mediaRecorder = new MediaRecorder();
 
-        //Get references to UI elements
+
         startBtn = findViewById(R.id.btn_start_recording);
         stopBtn = findViewById(R.id.btn_stop_recording);
 
-        //Listen for button clicks
+
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,12 +58,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //get screen density
+
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         screenDensity = metrics.densityDpi;
 
-        //initialize media projection manager
+
         mediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
     }
 
@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             mediaRecorder.setOutputFile(videoSavePath);
             mediaRecorder.prepare();
 
-            // Request permission to capture the screen
+
             startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(), REQUEST_CODE);
         } catch (IOException e) {
             e.printStackTrace();
@@ -124,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
         mediaRecorder.reset();
         mediaProjection.stop();
 
-        // Release the media recorder
         mediaRecorder.release();
     }
 }
